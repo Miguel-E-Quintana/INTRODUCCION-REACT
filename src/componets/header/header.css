@@ -1,0 +1,14 @@
+.header {
+    background-image: url(./img/Header.jpg);
+    height: 400px;
+    filter: brightness(50%);
+    color: aliceblue;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
