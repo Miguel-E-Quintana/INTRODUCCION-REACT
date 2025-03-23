@@ -24,8 +24,15 @@
     
 }
 
-.card p {
-    margin: 10px;
+.card ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card ul li {
+    width: 150px;
 }
 
 .card hr {

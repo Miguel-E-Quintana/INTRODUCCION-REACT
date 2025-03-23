@@ -1,19 +1,21 @@
-import Footer from "./componets/Footer/Footer"
-import Home from "./componets/Home/Home"
 import Navbar from "./componets/Navbar/Navbar"
-import Register from "./componets/Register/Register"
-import Login from "./componets/Login/Login"
+import Footer from "./componets/Footer/Footer"
+// import Home from "./components/Home/Home"
+import Cart from "./componets/Cart/Cart"
+// import Register from "./components/Register/Registro"
+// import Login from "./components/Login/Login"
 
 const App = () => {
 
   return (
     <>
-    <Navbar />
-    {/* <Register/> */}
-    <Login />
-    {/* <Home />   */}
-    <Footer />
-  </>
+      <Navbar />
+      <Cart />
+      {/* <Register/> */}
+      {/* <Login /> */}
+      {/* <Home /> */}
+      <Footer />
+    </>
   )
 }
 
