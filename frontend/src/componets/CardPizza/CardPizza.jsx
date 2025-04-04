@@ -1,6 +1,20 @@
+import React, { useEffect, useState } from 'react'
 import './CardPizza.css'
 
-const CardPizza = ({ pizzas }) => {
+const CardPizza = () => {
+
+    const [pizzas, setPizzas] = useState([])
+
+    const getPizzas = async () => {
+        const response = await fetch('http://localhost:5000/api/pizzas')
+        const data = await response.json()
+        setPizzas(data)
+    }
+    useEffect(() => {
+        getPizzas()
+    }, [])
+
+
     return (
         <div className='container'>
             {pizzas.map((pizza, index) => (
@@ -15,7 +29,7 @@ const CardPizza = ({ pizzas }) => {
                         ))}
                     </ul>
                     <hr></hr>
-                    <h3>Precio: {pizza.price}</h3>
+                    <h3>Precio: ${pizza.price}</h3>
                     <div className='botones'>
                         <button>Ver mas 👀</button>
                         <button className='cesta'>Añadir 🛒</button>
