@@ -1,11 +1,21 @@
 import './Cart.css';
-import { pizzaCart } from '../Home/pizzas';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Cart = () => {
-    const [cartItems, setCartItems] = useState(
-        pizzaCart.map((pizza) => ({ ...pizza, quantity: 0 }))
-    );
+    const [cartItems, setCartItems] = useState([]);
+
+    useEffect(() => {
+        const fetchCartItems = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/pizzas');
+                const data = await response.json();
+                setCartItems(data.map(item => ({ ...item, quantity: 0 }))); // Inicializa quantity a 0
+            } catch (error) {
+                console.error('Error fetching pizzas:', error);
+            }
+        };
+        fetchCartItems();
+    }, []);
 
     const incrementQuantity = (id) => {
         setCartItems((prevItems) =>
@@ -18,18 +28,21 @@ const Cart = () => {
     const decrementQuantity = (id) => {
         setCartItems((prevItems) =>
             prevItems.map((item) =>
-                item.id === id && item.quantity > 0
-                    ? { ...item, quantity: item.quantity - 1 }
-                    : item
+                item.id === id && item.quantity > 0 ? { ...item, quantity: item.quantity - 1 } : item
             )
         );
     };
 
     const calculateTotal = () => {
-        return cartItems.reduce(
-            (total, item) => total + item.price * item.quantity,
-            0
-        );
+        return cartItems.reduce((total, item) => {
+            const price = parseFloat(item.price);
+            const quantity = parseInt(item.quantity, 10); 
+
+            if (isNaN(price) || isNaN(quantity)) {
+                return total;
+            }
+            return total + price * quantity;
+        }, 0);
     };
 
     return (
@@ -56,5 +69,4 @@ const Cart = () => {
         </>
     );
 };
-
 export default Cart;
