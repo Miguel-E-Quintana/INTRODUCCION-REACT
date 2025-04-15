@@ -1,48 +1,19 @@
 import './Cart.css';
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
+import { CartContext } from '../../context/CartContext';
 
 const Cart = () => {
-    const [cartItems, setCartItems] = useState([]);
+    const { setCartItems, cartItems, incrementQuantity, decrementQuantity, calculateTotal } = useContext(CartContext);
 
-    useEffect(() => {
-        const fetchCartItems = async () => {
-            try {
-                const response = await fetch('http://localhost:5000/api/pizzas');
-                const data = await response.json();
-                setCartItems(data.map(item => ({ ...item, quantity: 0 }))); // Inicializa quantity a 0
-            } catch (error) {
-                console.error('Error fetching pizzas:', error);
-            }
-        };
-        fetchCartItems();
-    }, []);
+    const handleDecrement = (id) => {
+        const itemToDecrement = cartItems.find(item => item.id === id);
 
-    const incrementQuantity = (id) => {
-        setCartItems((prevItems) =>
-            prevItems.map((item) =>
-                item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-            )
-        );
-    };
-
-    const decrementQuantity = (id) => {
-        setCartItems((prevItems) =>
-            prevItems.map((item) =>
-                item.id === id && item.quantity > 0 ? { ...item, quantity: item.quantity - 1 } : item
-            )
-        );
-    };
-
-    const calculateTotal = () => {
-        return cartItems.reduce((total, item) => {
-            const price = parseFloat(item.price);
-            const quantity = parseInt(item.quantity, 10); 
-
-            if (isNaN(price) || isNaN(quantity)) {
-                return total;
-            }
-            return total + price * quantity;
-        }, 0);
+        if (itemToDecrement && itemToDecrement.count > 1) {
+            decrementQuantity(id);
+        } else if (itemToDecrement && itemToDecrement.count <= 1) {
+            const updatedCartItems = cartItems.filter(item => item.id !== id);
+            setCartItems(updatedCartItems);
+        }
     };
 
     return (
@@ -57,8 +28,8 @@ const Cart = () => {
                                 <h4>{item.name}</h4>
                                 <p>{item.price}</p>
                                 <button className='plus' onClick={() => incrementQuantity(item.id)}>+</button>
-                                <span>{item.quantity}</span>
-                                <button className='minus' onClick={() => decrementQuantity(item.id)}>-</button>
+                                <span>{item.count || 0}</span>
+                                <button className='minus' onClick={() => handleDecrement(item.id)}>-</button>
                             </li>
                         ))}
                     </ul>
@@ -69,4 +40,5 @@ const Cart = () => {
         </>
     );
 };
+
 export default Cart;

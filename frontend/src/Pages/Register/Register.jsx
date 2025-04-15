@@ -1,5 +1,5 @@
-import './Register'
 import React, { useState } from 'react';
+import './Register'
 
 const Register = () => {
     const [email, setEmail] = useState('');
@@ -27,7 +27,7 @@ const handleSubmit = (e) => {
       return
     }
     setSuccess(true)
-} 
+}
 return (
         <div className='register'>
             <h1>Registro</h1>

@@ -1,10 +1,12 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
-import {Navbar, Footer} from './components/';
-import { Home, Pizza, Cart, Register, Login, NotFound, Profile } from './Pages/index';
+import {Navbar, Footer} from './components/index';
+import { Home, Pizza, Cart, Register, Login, NotFound, Profile } from './pages/index';
+import CartProvider from './Context/CartContext';
 const App = () => {
 
   return (
     <BrowserRouter>
+      <CartProvider>
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
@@ -15,6 +17,7 @@ const App = () => {
         <Route path='/profile' element={<Profile />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
+      </CartProvider>
       <Footer />
     </BrowserRouter>
   )
