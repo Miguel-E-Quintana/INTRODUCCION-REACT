@@ -1,9 +1,11 @@
 import './Cart.css';
 import React, { useContext } from 'react';
 import { CartContext } from '../../context/CartContext';
+import { UserContext } from '../../context/UserContext';
 
 const Cart = () => {
     const { setCartItems, cartItems, incrementQuantity, decrementQuantity, calculateTotal } = useContext(CartContext);
+    const { token } = useContext(UserContext)
 
     const handleDecrement = (id) => {
         const itemToDecrement = cartItems.find(item => item.id === id);
@@ -35,7 +37,8 @@ const Cart = () => {
                     </ul>
                 </div>
                 <h3>Total: ${calculateTotal()}</h3>
-                <button className='pay'>Pagar</button>
+                <button className='pay' disabled={!token}>Pagar</button>
+                {!token && <p>Debes iniciar sesión para poder pagar.</p>}
             </section>
         </>
     );

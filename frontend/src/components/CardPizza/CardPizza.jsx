@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react';
 import './CardPizza.css';
 import { CartContext } from '../../context/CartContext';
+import {Link} from 'react-router-dom';
 
 const CardPizza = () => {
     const { cartItems, setCartItems } = useContext(CartContext);
     const [pizzas, setPizzas] = useState([]);
 
     const getPizzas = async () => {
-        const response = await fetch('http://localhost:5000/api/pizzas');
+        const response = await fetch(`http://localhost:5000/api/pizzas/`);
         const data = await response.json();
         setPizzas(data);
     };
@@ -48,7 +49,7 @@ const CardPizza = () => {
                     <hr />
                     <h3>Precio: ${pizza.price}</h3>
                     <div className='botones'>
-                        <button>Ver mas 👀</button>
+                    <Link to={`/pizza/${pizza.id}`}><button >Ver mas 👀</button></Link>
                         <button className='cesta' onClick={() => addItemToCart(pizza.id)}>Añadir 🛒</button>
                     </div>
                 </div>
