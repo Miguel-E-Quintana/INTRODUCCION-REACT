@@ -1,4 +1,5 @@
-// import 'Register.css'
+
+import './Register.css'
 import React, { useState } from 'react';
 
 const Register = () => {

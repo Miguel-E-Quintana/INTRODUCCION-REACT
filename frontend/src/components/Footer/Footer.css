@@ -7,4 +7,19 @@ footer {
     border: 1px solid;
     background-color: #292424;
     color: aliceblue;
+    text-align: center; 
+}
+
+footer h3 { 
+    font-size: 1em; 
+    margin: 0;
+}
+
+
+
+
+@media (max-width: 480px) {
+    footer h3 {
+        font-size: 0.9em; 
+    }
 }

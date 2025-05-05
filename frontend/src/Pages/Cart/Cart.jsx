@@ -1,11 +1,14 @@
 import './Cart.css';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { CartContext } from '../../context/CartContext';
 import { UserContext } from '../../context/UserContext';
 
 const Cart = () => {
     const { setCartItems, cartItems, incrementQuantity, decrementQuantity, calculateTotal } = useContext(CartContext);
-    const { token } = useContext(UserContext)
+    const { token } = useContext(UserContext);
+    const [checkoutSuccess, setCheckoutSuccess] = useState(false);
+    const [checkoutError, setCheckoutError] = useState(null);
+    const [checkoutLoading, setCheckoutLoading] = useState(false); // Agrega estado de carga
 
     const handleDecrement = (id) => {
         const itemToDecrement = cartItems.find(item => item.id === id);
@@ -15,6 +18,40 @@ const Cart = () => {
         } else if (itemToDecrement && itemToDecrement.count <= 1) {
             const updatedCartItems = cartItems.filter(item => item.id !== id);
             setCartItems(updatedCartItems);
+        }
+    };
+
+    const handleCheckout = async () => {
+        if (!token) {
+            alert('Debes iniciar sesión para realizar el pedido.');
+            return;
+        }
+
+        setCheckoutLoading(true);
+        setCheckoutError(null);
+
+        try {
+            const response = await fetch('http://localhost:5000/api/checkouts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ cart: cartItems.map(item => ({ id: item.id, quantity: item.count })) }), // Usa cartItems aquí
+            });
+
+            if (response.ok) {
+                setCartItems([]); // Limpia el carrito del contexto
+                setCheckoutSuccess(true);
+                setTimeout(() => setCheckoutSuccess(false), 3000);
+            } else {
+                const errorData = await response.json();
+                setCheckoutError(errorData?.error || 'Error al procesar el pedido.');
+            }
+        } catch (error) {
+            setCheckoutError('Error de conexión al procesar el pedido.');
+        } finally {
+            setCheckoutLoading(false);
         }
     };
 
@@ -37,8 +74,12 @@ const Cart = () => {
                     </ul>
                 </div>
                 <h3>Total: ${calculateTotal()}</h3>
-                <button className='pay' disabled={!token}>Pagar</button>
+                <button className='pay' onClick={handleCheckout} disabled={!token || cartItems.length === 0 || checkoutLoading}>
+                    {checkoutLoading ? 'Procesando...' : (token ? (cartItems.length > 0 ? 'Pagar' : 'Carrito Vacío') : 'Pagar')}
+                </button>
                 {!token && <p>Debes iniciar sesión para poder pagar.</p>}
+                {checkoutSuccess && <p>¡Pedido realizado con éxito!</p>}
+                {checkoutError && <p>{checkoutError}</p>}
             </section>
         </>
     );
